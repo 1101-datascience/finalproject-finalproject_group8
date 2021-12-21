@@ -1,10 +1,11 @@
-# [8] Title of your final project
+# [Group8] Title of your final project
 
 ### Groups
-* name, student ID1
-* name, student ID2
-* name, student ID3
-* ...
+* 何彥南, 110753202
+* 陳偉瑄, 110971020
+* 葉又瑄, 108304046
+* 鮑蕾雅, 108304017
+* 林佑彥,	108304015
 
 ### Goal
 A breif introduction about your project, i.e., what is your goal?
