@@ -1,4 +1,4 @@
-# [GroupID] Title of your final project
+# [8] Title of your final project
 
 ### Groups
 * name, student ID1
