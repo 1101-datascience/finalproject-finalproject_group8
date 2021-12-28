@@ -27,7 +27,7 @@ Rscript code/your_script.R --input data/training --output results/performance.ts
 
 ### data
 
-* Source
+* Source: [Credit Card Fraud Detection](https://www.kaggle.com/mlg-ulb/creditcardfraud)
 * Input format
 * Any preprocessing?
   * Handle missing data
