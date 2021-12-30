@@ -1,10 +1,12 @@
-# [GroupID] Title of your final project
+# [Group8] Credit Card Fraud Detection
+#### Tags: `Imbalanced data`、`Binary classification`、`Finance`、`Transaction data`
 
 ### Groups
-* name, student ID1
-* name, student ID2
-* name, student ID3
-* ...
+* 何彥南, 110753202
+* 陳偉瑄, 110971020
+* 葉又瑄, 108304046
+* 鮑蕾雅, 108304017
+* 林佑彥,	108304015
 
 ### Goal
 A breif introduction about your project, i.e., what is your goal?
@@ -26,7 +28,7 @@ Rscript code/your_script.R --input data/training --output results/performance.ts
 
 ### data
 
-* Source
+* Source: [Credit Card Fraud Detection](https://www.kaggle.com/mlg-ulb/creditcardfraud)
 * Input format
 * Any preprocessing?
   * Handle missing data
