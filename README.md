@@ -1,4 +1,4 @@
-# [Group8] Title of your final project
+# [Group8] Credit Card Fraud Detection - classification on imbalanced data
 
 ### Groups
 * 何彥南, 110753202
