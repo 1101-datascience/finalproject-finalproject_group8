@@ -1,4 +1,4 @@
-df <- read.csv('./data/creditcard.csv')
+df <- read.csv('./data/raw/creditcard.csv')
 
 
 # 訓練與測試資料切割 ===========================================
