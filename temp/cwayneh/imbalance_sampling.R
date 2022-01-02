@@ -8,7 +8,7 @@ under_sample <- function(data, nsmp, amp){
 # read parameters
 args = commandArgs(trailingOnly=TRUE)
 if (length(args)==0) {
-  stop("USAGE: Rscript hw6_studentID.R --nsmp n --amp m --train Data/train.csv --test Data/test.csv --report performance.csv --predict predict.csv", call.=FALSE)
+  stop("USAGE: Rscript imbalance_sampling.R --nsmp n --amp m --train Data/train.csv --test Data/test.csv --report performance.csv", call.=FALSE)
 }
 # parse parameters
 i<-1 
