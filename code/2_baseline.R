@@ -4,6 +4,10 @@ source('utils.R')
 check_library('rpart')
 library(rpart)
 
+# 視覺化
+check_library('ggplot2')
+library(ggplot2)
+
 # 資料準備 =================================================
 fold <- 4
 label <- 'Class'
