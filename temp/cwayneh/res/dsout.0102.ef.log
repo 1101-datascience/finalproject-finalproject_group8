@@ -1,0 +1,68 @@
+--------BEGIN at 2022/01/02 ถgค้ 23:23:32.56 
+Loading required package: rpart
+[1] "V14"
+     pred
+truth     0     1
+    0 59864     1
+    1    62    15
+[1] "precision, recall of fraud: 0.9375 , 0.194805"
+  Method Range TargetFeature Precision   Recall NumberOfRow
+1    IQR  -3~3           V14    0.9375 0.194805      221381
+[1] "DONE"
+Time difference of 47.13978 secs
+Loading required package: rpart
+[1] "V14"
+     pred
+truth     0     1
+    0 59864     1
+    1    62    15
+[1] "precision, recall of fraud: 0.9375 , 0.194805"
+  Method Range TargetFeature Precision   Recall NumberOfRow
+1    std  -3~3           V14    0.9375 0.194805      221972
+[1] "DONE"
+Time difference of 47.76225 secs
+Loading required package: rpart
+[1] "V28"
+     pred
+truth     0     1
+    0 59839    26
+    1    28    49
+[1] "precision, recall of fraud: 0.653333 , 0.636364"
+  Method Range TargetFeature Precision   Recall NumberOfRow
+1    IQR  -3~3           V28  0.653333 0.636364      211251
+[1] "DONE"
+Time difference of 45.73873 secs
+Loading required package: rpart
+[1] "V28"
+     pred
+truth     0     1
+    0 59841    24
+    1    23    54
+[1] "precision, recall of fraud: 0.692308 , 0.701299"
+  Method Range TargetFeature Precision   Recall NumberOfRow
+1    std  -3~3           V28  0.692308 0.701299      222256
+[1] "DONE"
+Time difference of 45.03469 secs
+Loading required package: rpart
+[1] "V3"
+     pred
+truth     0     1
+    0 59860     5
+    1    24    53
+[1] "precision, recall of fraud: 0.913793 , 0.688312"
+  Method Range TargetFeature Precision   Recall NumberOfRow
+1    IQR  -3~3            V3  0.913793 0.688312      223739
+[1] "DONE"
+Time difference of 48.76208 secs
+Loading required package: rpart
+[1] "V3"
+     pred
+truth     0     1
+    0 59841    24
+    1    21    56
+[1] "precision, recall of fraud: 0.7 , 0.727273"
+  Method Range TargetFeature Precision   Recall NumberOfRow
+1    std  -3~3            V3       0.7 0.727273      223156
+[1] "DONE"
+Time difference of 51.19289 secs
+END at 2022/01/02 ถgค้ 23:28:19.66-------- 
