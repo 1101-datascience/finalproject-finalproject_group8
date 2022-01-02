@@ -50,10 +50,10 @@
 * What is the challenge part of your project?
 
 ## References
-- Tommy Huang, 機器學習: Ensemble learning之Bagging、Boosting和AdaBoost, 2018, medium. [source](https://chih-sheng-huang821.medium.com/%E6%A9%9F%E5%99%A8%E5%AD%B8%E7%BF%92-ensemble-learning%E4%B9%8Bbagging-boosting%E5%92%8Cadaboost-af031229ebc3)
-- Tatiana Sennikova, How to Build a Baseline Model,  2020, medium. [source](https://towardsdatascience.com/how-to-build-a-baseline-model-be6ce42389fc)
-- Google, Classification on imbalanced data, 2021,  Tensorflow tutorials. [source](https://www.tensorflow.org/tutorials/structured_data/imbalanced_data)
-- Google, Validation Set: Another Partition, 2020, google developers(Machine Learning Crash Course). [source](https://developers.google.com/machine-learning/crash-course/validation/another-partition)
+- _Tommy Huang, 機器學習: Ensemble learning之Bagging、Boosting和AdaBoost, 2018, medium. ([source](https://chih-sheng-huang821.medium.com/%E6%A9%9F%E5%99%A8%E5%AD%B8%E7%BF%92-ensemble-learning%E4%B9%8Bbagging-boosting%E5%92%8Cadaboost-af031229ebc3))_
+- _Tatiana Sennikova, How to Build a Baseline Model,  2020, medium. ([source](https://towardsdatascience.com/how-to-build-a-baseline-model-be6ce42389fc))_
+- _Google, Classification on imbalanced data, 2021,  Tensorflow tutorials. ([source](https://www.tensorflow.org/tutorials/structured_data/imbalanced_data))_
+- _Google, Validation Set: Another Partition, 2020, google developers(Machine Learning Crash Course). ([source](https://developers.google.com/machine-learning/crash-course/validation/another-partition))_
 
 ## environment
 - `./docs/sessionInfo(yen-nan ho).txt`
