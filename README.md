@@ -9,10 +9,12 @@
 * 林佑彥,	108304015
 
 ### Goal
-A breif introduction about your project, i.e., what is your goal?
-
+有兩天的信用卡交易紀錄資料，目標是由前面 40 小時 的資料(train)預測後面  8 小時的資料(test)
+![](results/0_train_test_split_data.png)
+### K-fold methon
+![](results/0_kfold_split_threeway.png)
 ### Demo 
--> `code/2_baseline.R`
+可以參考 `code/2_baseline.R`，有使用 R 的 rpart(決策樹) 在我們定義 kfol(`output/1_kfold/kfold_idx.rds`) 測試的實驗
 
 ## Folder organization and its related information
 
@@ -37,7 +39,6 @@ A breif introduction about your project, i.e., what is your goal?
 * How do your perform evaluation? ie. cross-validation, or addtional indepedent data set
 
 ### results
-
 * Which metric do you use 
   * precision, recall, R-square
 * Is your improvement significant?
