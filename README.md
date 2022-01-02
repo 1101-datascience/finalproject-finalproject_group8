@@ -50,9 +50,10 @@
 * What is the challenge part of your project?
 
 ## References
-* Code/implementation which you include/reference (__You should indicate in your presentation if you use code for others. Otherwise, cheating will result in 0 score for final project.__)
-* Packages you use
-* Related publications
+- Tommy Huang, 機器學習: Ensemble learning之Bagging、Boosting和AdaBoost, 2018, medium. (source)
+- Tatiana Sennikova, How to Build a Baseline Model,  2020, medium. (source)
+- Google, Classification on imbalanced data, 2021,  Tensorflow tutorials. (source)
+- Google, Validation Set: Another Partition, 2020, google developers(Machine Learning Crash Course). (source)
 
 ## environment
 - `./docs/sessionInfo(yen-nan ho).txt`
