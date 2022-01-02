@@ -8,9 +8,6 @@ library(rpart)
 check_library('ggplot2')
 library(ggplot2)
 
-# 資料處理
-check_library('tidyr')
-library(tidyr)
 # function >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 # 先各個標籤分開抽樣處理，最後將各組併在一起(除不盡的隨機配到各組)
 get_kfold_idx <- function (d, k, label_col) {
