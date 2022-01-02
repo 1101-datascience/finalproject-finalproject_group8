@@ -13,6 +13,13 @@ kfoldid_path <- './output/1_kfold/kfold_idx.rds'
 train_path <- "./data/train.csv"
 test_path <- "./data/test.csv"
 
+kfold_idx <- readRDS(kfoldid_path)
+
+train <- read.csv(train_path)
+test <- read.csv(test_path)
+
+# 實驗 1 ==============================================
+# 輸出路徑
 result_path <- './output/2_baseline/result.maxdepth.csv'
 result_select_path <- './output/2_baseline/result_select.maxdepth.csv'
 result_best_path <- './output/2_baseline/result_best.maxdepth.csv'
@@ -23,16 +30,6 @@ build_folder(result_select_path)
 build_folder(result_best_path)
 build_folder(pred_path, isfile=FALSE)
 
-kfold_idx <- readRDS(kfoldid_path)
-
-train <- read.csv(train_path)
-test <- read.csv(test_path)
-
-train.f <- train
-train.f$Class <- NULL
-train.label <- train$Class
-
-# 實驗 1 ==============================================
 experiment_ls <- list(
   'decision trees(depth=1)' = function(train, label){
     model <- rpart(formula(paste(label, '~', '.')),
@@ -149,7 +146,23 @@ write.csv(result_select, result_select_path,
           row.names = FALSE, quote = FALSE)
 write.csv(result_select_best, result_best_path, 
           row.names = FALSE, quote = FALSE)
+result_select_best <- read.csv(result_best_path)
+aggNew <- result_select_best %>% pivot_longer(cols =  c('test_accuracy',
+                                                        'test_precision',
+                                                        'test_recall',
+                                                        'test_f1'),
+                                              names_to = "Evaluation", 
+                                              values_to = "Value")
+
+COLORS <- c(test_accuracy = "darkred", test_precision ="steelblue",  
+            test_recall = "turquoise" , test_f1 = "tan1")
+ggplot(aggNew, aes(x = experiment, y = Value, group = Evaluation, color = Evaluation)) +
+  geom_line(size = 0.9) +
+  scale_color_manual(values = COLORS) +
+  scale_x_discrete(labels= c('maxdepth=1', 'maxdepth=5', 'maxdepth=10', 'maxdepth=15', 'maxdepth=20'))
+
 # 實驗 2 ==============================================
+# 輸出路徑
 result_path <- './output/2_baseline/result.minsplit.csv'
 result_select_path <- './output/2_baseline/result_select.minsplit.csv'
 result_best_path <- './output/2_baseline/result_best.minsplit.csv'
@@ -157,16 +170,6 @@ pred_path <- './output/2_baseline/pred.minsplit/'
 build_folder(pred_path, isfile = FALSE)
 
 experiment_ls <- list(
-  'decision trees(minsplit=1)' = function(train, label){
-    model <- rpart(formula(paste(label, '~', '.')),
-                   data=train, control=rpart.control(minsplit=1),
-                   method="class")
-  },
-  'decision trees(minsplit=5)' = function(train, label){
-    model <- rpart(formula(paste(label, '~', '.')),
-                   data=train, control=rpart.control(minsplit=5),
-                   method="class")
-  },  
   'decision trees(minsplit=10)' = function(train, label){
     model <- rpart(formula(paste(label, '~', '.')),
                    data=train, control=rpart.control(minsplit=10),
@@ -180,6 +183,21 @@ experiment_ls <- list(
   'decision trees(minsplit=20)' = function(train, label){
     model <- rpart(formula(paste(label, '~', '.')),
                    data=train, control=rpart.control(minsplit=20),
+                   method="class")
+  },
+  'decision trees(minsplit=25)' = function(train, label){
+    model <- rpart(formula(paste(label, '~', '.')),
+                   data=train, control=rpart.control(minsplit=25),
+                   method="class")
+  },
+  'decision trees(minsplit=30)' = function(train, label){
+    model <- rpart(formula(paste(label, '~', '.')),
+                   data=train, control=rpart.control(minsplit=30),
+                   method="class")
+  },
+  'decision trees(minsplit=35)' = function(train, label){
+    model <- rpart(formula(paste(label, '~', '.')),
+                   data=train, control=rpart.control(minsplit=30),
                    method="class")
   }
 )
@@ -272,3 +290,18 @@ write.csv(result_select, result_select_path,
           row.names = FALSE, quote = FALSE)
 write.csv(result_select_best, result_best_path, 
           row.names = FALSE, quote = FALSE)
+
+aggNew <- result_select_best %>% pivot_longer(cols =  c('test_accuracy',
+                                                        'test_precision',
+                                                        'test_recall',
+                                                        'test_f1'),
+                                              names_to = "Evaluation", 
+                                              values_to = "Value")
+
+COLORS <- c(test_accuracy = "darkred", test_precision ="steelblue",  
+            test_recall = "turquoise" , test_f1 = "tan1")
+ggplot(aggNew, aes(x = experiment, y = Value, group = Evaluation, color = Evaluation)) +
+  geom_line(size = 0.9) +
+  scale_color_manual(values = COLORS) +
+  scale_x_discrete(labels= c('minsplit=10', 'minsplit=15', 'minsplit=20',
+                             'minsplit=25', 'minsplit=30', 'minsplit=35'))
