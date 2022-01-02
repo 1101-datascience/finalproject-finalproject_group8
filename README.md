@@ -9,8 +9,13 @@
 * 林佑彥,	108304015
 
 ### Goal
-有兩天的信用卡交易紀錄資料，目標是由前面 40 小時 的資料(train)預測後面  8 小時的資料(test)
+- 有兩天的信用卡交易紀錄資料，包含以下特徵28個 PCA 特徵(V1 ~ V28)、交易額(Amount)、時間(Time)，預測目標為是否為詐欺交易(Class)。
+- 因為詐欺交易本來就是數量較少，資料呈現極度不平衡狀態。
+- 目標是由前面 40 小時 的資料(train)預測後面  8 小時發生的詐欺交易(test)
+
 ![](results/0_train_test_split_data.png)
+
+
 ### K-fold methon
 ![](results/0_kfold_split_threeway.png)
 ### Demo 
