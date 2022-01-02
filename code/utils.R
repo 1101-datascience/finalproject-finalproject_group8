@@ -41,7 +41,6 @@ evaluation_score <- function(predicted, expected, name='', positive.class="1") {
 
 ## 分類結果分數計算 ## =========================================
 get_evaluate <- function(model, train, test, label, val=NA, th=NA, pred_type="class") {
-  # "response"、 "class"
   # function ---------------
   calculate_accuracy <- function(frame) {
     rtab <- table(frame)
@@ -50,13 +49,18 @@ get_evaluate <- function(model, train, test, label, val=NA, th=NA, pred_type="cl
   }
   
   get_truth_pred_frame <- function(data, model, label, pred_type, th) {
-    # 模型預測
-    resultframe <- data.frame(truth=data[, label],
-                              pred=predict(model, data, type=pred_type))
-    
+
     # 使用門檻判斷類別(需要用 pred_type 改成 response ，讓模型預測機率)
-    if (!is.na(th)) {
+    if (pred_type == 'prob') {
+      # 模型預測
+      resultframe <- data.frame(truth=data[, label],
+                                pred=predict(model, data, type=pred_type)[,2])
+      
       resultframe$pred <- ifelse(resultframe$pred>th, 1, 0)
+    } else {
+      resultframe <- data.frame(truth=data[, label],
+                                pred=predict(model, data, type=pred_type))
+      
     }
     
     return(resultframe)
@@ -106,6 +110,8 @@ get_evaluate <- function(model, train, test, label, val=NA, th=NA, pred_type="cl
                   name = 'val')
     )
   }
+  result <- rapply(result, f=function(x) ifelse(is.nan(x),0,x), how="replace" )
+  
   return(list(result=result, table=pred_table))
 }
 
