@@ -12,11 +12,7 @@
 A breif introduction about your project, i.e., what is your goal?
 
 ### Demo 
-You should provide an example commend to reproduce your result
-```R
-Rscript code/your_script.R --input data/training --output results/performance.tsv
-```
-* any on-line visualization
+-> `code/2_baseline.R`
 
 ## Folder organization and its related information
 
