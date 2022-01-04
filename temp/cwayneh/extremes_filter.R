@@ -9,7 +9,7 @@ extremes_handler <- function(method, range, data, target){
         iqr <- IQR(data_eh[,i])
         lb <- range[1] #lower bound
         ub <- range[2] #upper bound
-        data <- data[data_eh[,i]>(lb*iqr)&data_eh[,i]<(ub*iqr),]
+        data_eh <- data_eh[data_eh[,i]>(lb*iqr)&data_eh[,i]<(ub*iqr),]
       }
     },
     std = {
@@ -18,11 +18,11 @@ extremes_handler <- function(method, range, data, target){
         imn <- mean(data_eh[,i]) #mean
         lb <- range[1] #lower bound
         ub <- range[2] #upper bound
-        data <- data[data_eh[,i]>(imn+lb*isd)&data_eh[,i]<(imn+ub*isd),]
+        data_eh <- data_eh[data_eh[,i]>(imn+lb*isd)&data_eh[,i]<(imn+ub*isd),]
       }
     }
   )
-  data <- data
+  data <- data[rownames(data_eh),]
 }
 # read parameters
 args = commandArgs(trailingOnly=TRUE)
@@ -40,8 +40,12 @@ while(i < length(args))
     range<-as.numeric(unlist(strsplit(args[i+1],',')))
     i<-i+1
   }else if(args[i] == "--target"){
-    target<-as.integer(unlist(strsplit(args[i+1],':')))
-    target<-c(target[1]:target[2])
+    target <- strsplit(unlist(strsplit(args[i+1],',')),':')
+    tgtmp <- c()
+    for (j in 1:length(target)) {
+      tgtmp <- c(tgtmp,target[[j]][1]:target[[j]][2])
+    }
+    target <- tgtmp
     i<-i+1
   }else if(args[i] == "--train"){
     filen<-args[i+1]
@@ -63,11 +67,14 @@ start.time <- Sys.time()
 train <- read.csv(filen, header = TRUE)
 test <- read.csv(filen2, header = TRUE)
 require(rpart)
-# method <- 'IQR'
-# target <- '2:2'
-# target <- as.integer(unlist(strsplit(target,':')))
-# target <- c(target[1]:target[2])
-# range <- '-3.5,3.5'
+# method <- 'std'
+# target <- '2:30'
+# tgtmp <- strsplit(unlist(strsplit(target,',')),':')
+# target <- c()
+# for (i in 1:length(tgtmp)) {
+#   target <- c(target,tgtmp[[i]][1]:tgtmp[[i]][2])
+# }
+# range <- '-2,2'
 # range <- as.numeric(unlist(strsplit(range,',')))
 names(train)[target]
 train_v <- extremes_handler(method, range, train, target)
@@ -77,13 +84,17 @@ cm_v <- table(truth=test$Class, pred=pred_v)
 print(cm_v)
 p <- diag(cm_v) / colSums(cm_v)
 r <- diag(cm_v) / rowSums(cm_v)
-print(paste("precision, recall of fraud:",round(p[2],6),",",round(r[2],6)))
-
+f1 <- ifelse(p + r == 0, 0, 2 * p * r / (p + r))
+#Assuming that F1 is zero when it's not possible compute it
+f1[is.na(f1)] <- 0
+print(paste("precision, recall of fraud:",round(p["1"],6),",",round(r["1"],6)))
+print(paste("f1:",round(f1["1"],6)))
 out_data <- data.frame(Method=method, 
                        Range=paste(range,collapse = "~"), 
                        TargetFeature=paste(names(train)[target],collapse = "+"),
-                       Precision=round(p[2],6),
-                       Recall=round(r[2],6),
+                       Precision=round(p["1"],6),
+                       Recall=round(r["1"],6),
+                       F1=round(f1["1"],6),
                        NumberOfRow=nrow(train_v),
                        stringsAsFactors = FALSE)
 print(out_data)
