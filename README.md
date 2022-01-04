@@ -9,8 +9,13 @@
 * 林佑彥,	108304015
 
 ### Goal
-有兩天的信用卡交易紀錄資料，目標是由前面 40 小時 的資料(train)預測後面  8 小時的資料(test)
+- 有兩天的信用卡交易紀錄資料，包含以下特徵28個 PCA 特徵(V1 ~ V28)、交易額(Amount)、時間(Time)，預測目標為是否為詐欺交易(Class)。
+- 因為詐欺交易本來就是數量較少，資料呈現極度不平衡狀態。
+- 目標是由前面 40 小時 的資料(train)預測後面  8 小時發生的詐欺交易(test)
+
 ![](results/0_train_test_split_data.png)
+
+
 ### K-fold methon
 ![](results/0_kfold_split_threeway.png)
 ### Demo 
@@ -20,17 +25,19 @@
 
 ### docs
 * Your presentation, 1101_datascience_FP_<yourID|groupName>.ppt/pptx/pdf, by **Jan. 13**
-* Any related document for the final project
-  * papers
-  * software user guide
+* 包含開會紀錄、工作進度
 
 ### data
-
-* Source: [Credit Card Fraud Detection](https://www.kaggle.com/mlg-ulb/creditcardfraud)
-* Input format
-* Any preprocessing?
-  * Handle missing data
-  * Scale value
+- Source: [Credit Card Fraud Detection](https://www.kaggle.com/mlg-ulb/creditcardfraud)
+- 說明
+  - `train.csv`
+    - 取前 40 小時的資料 (Time 欄位 < 144000)
+    - 共 224865 筆資料
+  - 目標欄位 Class 比例: 0.001846 
+    - `test.csv` :
+    - 取後 8 小時的資料 (Time 欄位 >= 144000)
+    - 共 59942 筆資料
+    - 目標欄位 Class 比例: 0.001285 
 
 ### code
 
@@ -45,9 +52,10 @@
 * What is the challenge part of your project?
 
 ## References
-* Code/implementation which you include/reference (__You should indicate in your presentation if you use code for others. Otherwise, cheating will result in 0 score for final project.__)
-* Packages you use
-* Related publications
+- _Tommy Huang, 機器學習: Ensemble learning之Bagging、Boosting和AdaBoost, 2018, medium. ([source](https://chih-sheng-huang821.medium.com/%E6%A9%9F%E5%99%A8%E5%AD%B8%E7%BF%92-ensemble-learning%E4%B9%8Bbagging-boosting%E5%92%8Cadaboost-af031229ebc3))_
+- _Tatiana Sennikova, How to Build a Baseline Model,  2020, medium. ([source](https://towardsdatascience.com/how-to-build-a-baseline-model-be6ce42389fc))_
+- _Google, Classification on imbalanced data, 2021,  Tensorflow tutorials. ([source](https://www.tensorflow.org/tutorials/structured_data/imbalanced_data))_
+- _Google, Validation Set: Another Partition, 2020, google developers(Machine Learning Crash Course). ([source](https://developers.google.com/machine-learning/crash-course/validation/another-partition))_
 
 ## environment
 - `./docs/sessionInfo(yen-nan ho).txt`
