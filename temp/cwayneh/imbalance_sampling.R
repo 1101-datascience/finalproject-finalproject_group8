@@ -1,9 +1,10 @@
-under_sample <- function(data, nsmp, amp){
+imbalance_handler <- function(data, nsmp, amp){
   f_ind <- which(data$Class == 1)
   nf_ind <- which(data$Class == 0)
-  pick_f <- sample(f_ind, nsmp)
+  pick_f <- sample(f_ind, nsmp, replace = ifelse(nsmp>length(f_ind),T,F))
   pick_nf <- sample(nf_ind, nsmp*amp)
   usmp.data <- data[c(pick_f, pick_nf),]
+  usmp.data <- usmp.data[order(usmp.data$Time),]
 }
 # read parameters
 args = commandArgs(trailingOnly=TRUE)
@@ -41,26 +42,28 @@ train <- read.csv(filen, header = TRUE)
 test <- read.csv(filen2, header = TRUE)
 
 # nrow(train[train$Class==1,])
-# dat <- under_sample(train, nrow(train[train$Class==1,]), 5)
+# dat <- imbalance_handler(train, nrow(train[train$Class==1,]), 5)
 # which(dat$Class==0)
 
 require(rpart)
 set.seed(65)
 # nsmp <- nrow(train[train$Class==1,])
 # amp <- 10
-train_v <- under_sample(train, nsmp, amp)
+train_v <- imbalance_handler(train, nsmp, amp)
 model_v <- rpart(Class~., train_v, method = "class")
 pred_v <- predict(model_v, test, type = "class")
 cm_v <- table(truth=test$Class, pred=pred_v)
 print(cm_v)
 p <- diag(cm_v) / colSums(cm_v)
 r <- diag(cm_v) / rowSums(cm_v)
-print(paste("precision, recall of fraud:",round(p[2],6),",",round(r[2],6)))
-
+f1 <- ifelse(p + r == 0, 0, 2 * p * r / (p + r))
+print(paste("precision, recall of fraud:",round(p["1"],6),",",round(r["1"],6)))
+print(paste("f1:",round(f1["1"],6)))
 out_data <- data.frame(NumberOfSample=nsmp, 
                        Amplification=amp, 
-                       Precision=round(p[2],6),
-                       Recall=round(r[2],6),
+                       Precision=round(p["1"],6),
+                       Recall=round(r["1"],6),
+                       F1=round(f1["1"],6),
                        NumberOfRow=nrow(train_v),
                        stringsAsFactors = FALSE)
 print(out_data)
