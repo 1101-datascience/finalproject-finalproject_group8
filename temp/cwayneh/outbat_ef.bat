@@ -54,3 +54,8 @@ cd ..
 
 echo END at %date% %time%-------- >>%fn%2>&1
 pause
+
+
+GOTO comment
+::for /l %i in (1,1,30) do %tgt% extremes_filter.R --method std --range -2.5,2.5 --target %i:%i --train train.csv --test test.csv --report output/performance.ef.csv >>%fn%2>&1
+:comment
