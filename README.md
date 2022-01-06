@@ -22,11 +22,19 @@
 ### K-fold methon
 ![](results/0_kfold_split_threeway.png)
 
-### Demo 
+## Demo 
 可以參考 `code/2_baseline.R`，有使用 R 的 rpart(決策樹) 作為預測模型，並在我們定義 kfold(`output/1_kfold/kfold_idx.rds`) 終測試模型穩定度，其中包含 maxdepth、minsplpit 參數測試的實驗流程
+#### 決策樹的參數測試(maxdepth)
+
+
+##### 1. 記錄每組實驗在各 fold 上的表現 ->  `output/2_baseline/result.maxdepth.csv`
+
+##### 2. 每組實驗用 val 的選出 fold F1-score 表現最好的 model -> `output/2_baseline/result_best.maxdepth.csv`
+
+##### 3. 實驗結果比較 ->  `results/2_baseline.maxdepth.png`
+![](results/2_baseline.maxdepth.png)
 
 ## Folder organization and its related information
-
 ### docs
 * Your presentation, 1101_datascience_FP_<yourID|groupName>.ppt/pptx/pdf, by **Jan. 13**
 * 包含開會紀錄、工作進度
