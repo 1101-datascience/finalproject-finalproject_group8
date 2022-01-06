@@ -1,28 +1,30 @@
 # extremes filter
 extremes_handler <- function(method, range, data, target){
   data_eh <- data.frame(data[,target])
+  data_tmp <- data_eh
   switch (method,
-    IQR = {
-      for (i in 1:NCOL(data_eh)) {
-        # q.75 <- quantile(data[,i], probs = 0.75)
-        # q.25 <- quantile(data[,i], probs = 0.25)
-        iqr <- IQR(data_eh[,i])
-        lb <- range[1] #lower bound
-        ub <- range[2] #upper bound
-        data <- data[data_eh[,i]>(lb*iqr)&data_eh[,i]<(ub*iqr),]
-      }
-    },
-    std = {
-      for (i in 1:NCOL(data_eh)) {
-        isd <- sd(data_eh[,i]) #standard deviation
-        imn <- mean(data_eh[,i]) #mean
-        lb <- range[1] #lower bound
-        ub <- range[2] #upper bound
-        data <- data[data_eh[,i]>(imn+lb*isd)&data_eh[,i]<(imn+ub*isd),]
-      }
-    }
+          IQR = {
+            for (i in 1:NCOL(data_eh)) {
+              # q.75 <- quantile(data[,i], probs = 0.75)
+              # q.25 <- quantile(data[,i], probs = 0.25)
+              iqr <- IQR(data_tmp[,i])
+              # print(iqr)
+              lb <- range[1] #lower bound
+              ub <- range[2] #upper bound
+              data_eh <- data_eh[data_eh[,i]>(lb*iqr)&data_eh[,i]<(ub*iqr),]
+            }
+          },
+          std = {
+            for (i in 1:NCOL(data_eh)) {
+              isd <- sd(data_tmp[,i]) #standard deviation
+              imn <- mean(data_tmp[,i]) #mean
+              lb <- range[1] #lower bound
+              ub <- range[2] #upper bound
+              data_eh <- data_eh[data_eh[,i]>(imn+lb*isd)&data_eh[,i]<(imn+ub*isd),]
+            }
+          }
   )
-  data <- data
+  data <- data[rownames(data.frame(data_eh)),]
 }
 # read parameters
 args = commandArgs(trailingOnly=TRUE)
@@ -40,8 +42,12 @@ while(i < length(args))
     range<-as.numeric(unlist(strsplit(args[i+1],',')))
     i<-i+1
   }else if(args[i] == "--target"){
-    target<-as.integer(unlist(strsplit(args[i+1],':')))
-    target<-c(target[1]:target[2])
+    target <- strsplit(unlist(strsplit(args[i+1],',')),':')
+    tgtmp <- c()
+    for (j in 1:length(target)) {
+      tgtmp <- c(tgtmp,target[[j]][1]:target[[j]][2])
+    }
+    target <- tgtmp
     i<-i+1
   }else if(args[i] == "--train"){
     filen<-args[i+1]
@@ -64,26 +70,41 @@ train <- read.csv(filen, header = TRUE)
 test <- read.csv(filen2, header = TRUE)
 require(rpart)
 # method <- 'IQR'
-# target <- '2:2'
-# target <- as.integer(unlist(strsplit(target,':')))
-# target <- c(target[1]:target[2])
-# range <- '-3.5,3.5'
+# target <- '2:7,9:9,11:30'
+# tgtmp <- strsplit(unlist(strsplit(target,',')),':')
+# target <- c()
+# for (i in 1:length(tgtmp)) {
+#   target <- c(target,tgtmp[[i]][1]:tgtmp[[i]][2])
+# }
+# range <- '-3,3'
 # range <- as.numeric(unlist(strsplit(range,',')))
+print("features processed below:")
 names(train)[target]
 train_v <- extremes_handler(method, range, train, target)
-model_v <- rpart(Class~., train_v, method = "class")
-pred_v <- predict(model_v, test, type = "class")
-cm_v <- table(truth=test$Class, pred=pred_v)
-print(cm_v)
-p <- diag(cm_v) / colSums(cm_v)
-r <- diag(cm_v) / rowSums(cm_v)
-print(paste("precision, recall of fraud:",round(p[2],6),",",round(r[2],6)))
+ifelse(!nrow(train_v[train_v$Class==1,]),
+       res <- c('NA','NA','NA'),
+       {
+         model_v <- rpart(Class~., train_v, method = "class")
+         pred_v <- predict(model_v, test, type = "class")
+         cm_v <- table(truth=test$Class, pred=pred_v)
+         print(cm_v)
+         p <- diag(cm_v) / colSums(cm_v)
+         r <- diag(cm_v) / rowSums(cm_v)
+         f1 <- ifelse(p + r == 0, 0, 2 * p * r / (p + r))
+         f1[is.na(f1)] <- 0
+         res <- round(c(p["1"],r["1"],f1["1"]),6)
+       }
+       )
 
+print(paste("precision, recall of fraud:",res[1],",",res[2]))
+print(paste("f1:",res[3]))
 out_data <- data.frame(Method=method, 
                        Range=paste(range,collapse = "~"), 
-                       TargetFeature=paste(names(train)[target],collapse = "+"),
-                       Precision=round(p[2],6),
-                       Recall=round(r[2],6),
+                       TargetFeatures=paste(names(train)[target],collapse = "+"),
+                       Precision=res[1],
+                       Recall=res[2],
+                       F1=res[3],
+                       FraudNumberOfRow=nrow(train_v[train_v$Class==1,]),
                        NumberOfRow=nrow(train_v),
                        stringsAsFactors = FALSE)
 print(out_data)
