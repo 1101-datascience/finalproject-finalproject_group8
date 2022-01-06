@@ -88,7 +88,12 @@ decision trees(depth=20)  |  1     |  1.000           |  1.000          |  0.999
 - _Google, Validation Set: Another Partition, 2020, google developers(Machine Learning Crash Course). ([source](https://developers.google.com/machine-learning/crash-course/validation/another-partition))_
 
 ## environment
-- `./docs/sessionInfo(yen-nan ho).txt`
+- R version 3.6.3
+- rpart: 4.1-15
+- ggplot2: 3.3.5
+
+### sessionInfo
+#### `./docs/sessionInfo(yen-nan ho).txt`
 ```
 R version 3.6.3 (2020-02-29)
 Platform: x86_64-w64-mingw32/x64 (64-bit)
