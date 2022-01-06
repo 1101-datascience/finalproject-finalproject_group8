@@ -8,6 +8,8 @@
 * 鮑蕾雅, 108304017
 * 林佑彥,	108304015
 
+### kaggle dataset: Credit Card Fraud Detection ([source](https://www.kaggle.com/mlg-ulb/creditcardfraud))
+![](results/kaggle_dataset.png)
 ### Goal
 - 有兩天的信用卡交易紀錄資料，包含以下特徵28個 PCA 特徵(V1 ~ V28)、交易額(Amount)、時間(Time)，預測目標為是否為詐欺交易(Class)。
 - 因為詐欺交易本來就是數量較少，資料呈現極度不平衡狀態。
@@ -27,17 +29,15 @@
 * Your presentation, 1101_datascience_FP_<yourID|groupName>.ppt/pptx/pdf, by **Jan. 13**
 * 包含開會紀錄、工作進度
 
-### data
-- Source: [Credit Card Fraud Detection](https://www.kaggle.com/mlg-ulb/creditcardfraud)
-- 說明
-  - `train.csv`
-    - 取前 40 小時的資料 (Time 欄位 < 144000)
-    - 共 224865 筆資料
+### data 
+- `train.csv`
+  - 取前 40 小時的資料 (Time 欄位 < 144000)
+  - 共 224865 筆資料
   - 目標欄位 Class 比例: 0.001846 
-    - `test.csv` :
-    - 取後 8 小時的資料 (Time 欄位 >= 144000)
-    - 共 59942 筆資料
-    - 目標欄位 Class 比例: 0.001285 
+- `test.csv` :
+  - 取後 8 小時的資料 (Time 欄位 >= 144000)
+  - 共 59942 筆資料
+  - 目標欄位 Class 比例: 0.001285 
 
 ### code
 
