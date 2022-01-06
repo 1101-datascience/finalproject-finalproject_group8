@@ -28,11 +28,31 @@
 
 
 ##### 1. 記錄每組實驗在各 fold 上的表現 ->  `output/2_baseline/result.maxdepth.csv`
-
+experiment                |  fold  |  train_accuracy  |  test_accuracy  |  val_accuracy  |  test_precision  |  test_recall  |  test_f1  |  val_precision  |  val_recall  |  val_f1  |  timeuse
+--------------------------|--------|------------------|-----------------|----------------|------------------|---------------|-----------|-----------------|--------------|----------|---------
+decision trees(depth=1)   |  1     |  0.999           |  0.999          |  0.999         |  0.655           |  0.494        |  0.563    |  0.760          |  0.731       |  0.745   |  7.650
+decision trees(depth=1)   |  2     |  0.999           |  0.999          |  0.999         |  0.655           |  0.494        |  0.563    |  0.786          |  0.740       |  0.762   |  3.657
+decision trees(depth=1)   |  3     |  0.999           |  0.999          |  0.999         |  0.694           |  0.442        |  0.540    |  0.778          |  0.680       |  0.725   |  3.763
+decision trees(depth=1)   |  4     |  0.999           |  0.999          |  0.999         |  0.655           |  0.494        |  0.563    |  0.731          |  0.731       |  0.731   |  3.432
+decision trees(depth=5)   |  1     |  1.000           |  1.000          |  0.999         |  0.905           |  0.740        |  0.814    |  0.842          |  0.817       |  0.829   |  12.746
+~  |~|~|~|~|~|~|~|~|~|~|
+decision trees(depth=15)  |  4     |  1.000           |  0.999          |  0.999         |  0.847           |  0.649        |  0.735    |  0.882          |  0.721       |  0.794   |  28.960
+decision trees(depth=20)  |  1     |  1.000           |  1.000          |  0.999         |  0.905           |  0.740        |  0.814    |  0.867          |  0.817       |  0.842   |  31.082
+decision trees(depth=20)  |  2     |  1.000           |  0.999          |  0.999         |  0.812           |  0.727        |  0.767    |  0.865          |  0.798       |  0.830   |  29.071
+decision trees(depth=20)  |  3     |  0.999           |  0.999          |  0.999         |  0.850           |  0.662        |  0.745    |  0.919          |  0.767       |  0.836   |  30.898
+decision trees(depth=20)  |  4     |  1.000           |  0.999          |  0.999         |  0.847           |  0.649        |  0.735    |  0.882          |  0.721       |  0.794   |  30.682
 ##### 2. 每組實驗用 val 的選出 fold F1-score 表現最好的 model -> `output/2_baseline/result_best.maxdepth.csv`
-
+experiment                |  fold  |  train_accuracy  |  test_accuracy  |  val_accuracy  |  test_precision  |  test_recall  |  test_f1  |  val_precision  |  val_recall  |  val_f1  |  timeuse  |  rank
+--------------------------|--------|------------------|-----------------|----------------|------------------|---------------|-----------|-----------------|--------------|----------|-----------|------
+decision trees(depth=1)   |  2     |  0.999           |  0.999          |  0.999         |  0.655           |  0.494        |  0.563    |  0.786          |  0.740       |  0.762   |  3.657    |  5
+decision trees(depth=5)   |  3     |  0.999           |  0.999          |  0.999         |  0.850           |  0.662        |  0.745    |  0.919          |  0.767       |  0.836   |  12.502   |  4
+decision trees(depth=10)  |  1     |  1.000           |  1.000          |  0.999         |  0.905           |  0.740        |  0.814    |  0.867          |  0.817       |  0.842   |  24.222   |  2
+decision trees(depth=15)  |  1     |  1.000           |  1.000          |  0.999         |  0.905           |  0.740        |  0.814    |  0.867          |  0.817       |  0.842   |  32.459   |  2
+decision trees(depth=20)  |  1     |  1.000           |  1.000          |  0.999         |  0.905           |  0.740        |  0.814    |  0.867          |  0.817       |  0.842   |  31.082   |  2
 ##### 3. 實驗結果比較 ->  `results/2_baseline.maxdepth.png`
 ![](results/2_baseline.maxdepth.png)
+
+##### 4. 所有實驗模型預測結果都會輸出在 -> `output/2_baseline/pred.maxdepth` 
 
 ## Folder organization and its related information
 ### docs
