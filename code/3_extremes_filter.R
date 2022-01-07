@@ -22,17 +22,18 @@ kfold_idx <- readRDS(kfoldid_path)
 train <- read.csv(train_path)
 test <- read.csv(test_path)
 
-method <- 'std'
-target <- '2:2'
-tgtmp <- strsplit(unlist(strsplit(target,',')),':')
-target <- c()
-for (i in 1:length(tgtmp)) {
-  target <- c(target,tgtmp[[i]][1]:tgtmp[[i]][2])
-}
-range <- '-3,3'
-range <- as.numeric(unlist(strsplit(range,',')))
-print("features processed below:")
-print(names(train)[target])
+# filter parameters
+# method <- 'std'
+# target <- '1:6'
+# tgtmp <- strsplit(unlist(strsplit(target,',')),':')
+# target <- c()
+# for (i in 1:length(tgtmp)) {
+#   target <- c(target,tgtmp[[i]][1]:tgtmp[[i]][2])
+# }
+# range <- '-3,3'
+# range <- as.numeric(unlist(strsplit(range,',')))
+# print("features processed below:")
+# print(names(train)[target])
 
 # 實驗 1 ==============================================
 # 輸出路徑
@@ -51,35 +52,58 @@ baseline_model <- function(train, label){
         data=train, control=rpart.control(maxdepth=10, minsplit=30),
         method="class")
 }
-
-experiment_ls <- list(
-  # extremes filter
-  'extremes_handler' = function(method, range, data, target){
-    data_eh <- data.frame(data[,target])
-    data_tmp <- data_eh
-    switch (method,
-            IQR = {
-              for (i in 1:NCOL(data_eh)) {
-                # q.75 <- quantile(data[,i], probs = 0.75)
-                # q.25 <- quantile(data[,i], probs = 0.25)
-                iqr <- IQR(data_tmp[,i])
-                # print(iqr)
-                lb <- range[1] #lower bound
-                ub <- range[2] #upper bound
-                data_eh <- data_eh[data_eh[,i]>(lb*iqr)&data_eh[,i]<(ub*iqr),]
-              }
-            },
-            std = {
-              for (i in 1:NCOL(data_eh)) {
-                isd <- sd(data_tmp[,i]) #standard deviation
-                imn <- mean(data_tmp[,i]) #mean
-                lb <- range[1] #lower bound
-                ub <- range[2] #upper bound
-                data_eh <- data_eh[data_eh[,i]>(imn+lb*isd)&data_eh[,i]<(imn+ub*isd),]
-              }
+# extremes filter
+extremes_handler <- function(method, range, data, target){
+  data_eh <- data.frame(data[,target])
+  data_tmp <- data_eh
+  switch (method,
+          IQR = {
+            for (i in 1:NCOL(data_eh)) {
+              # q.75 <- quantile(data[,i], probs = 0.75)
+              # q.25 <- quantile(data[,i], probs = 0.25)
+              iqr <- IQR(data_tmp[,i])
+              # print(iqr)
+              lb <- range[1] #lower bound
+              ub <- range[2] #upper bound
+              data_eh <- data_eh[data_eh[,i]>(lb*iqr)&data_eh[,i]<(ub*iqr),]
             }
-    )
-    data <- data[rownames(data.frame(data_eh)),]
+          },
+          std = {
+            for (i in 1:NCOL(data_eh)) {
+              isd <- sd(data_tmp[,i]) #standard deviation
+              imn <- mean(data_tmp[,i]) #mean
+              lb <- range[1] #lower bound
+              ub <- range[2] #upper bound
+              data_eh <- data_eh[data_eh[,i]>(imn+lb*isd)&data_eh[,i]<(imn+ub*isd),]
+            }
+          }
+  )
+  data <- data[rownames(data.frame(data_eh)),]
+}
+experiment_ls <- list(
+  'extremes_handler_std_3_1-6' = function(data){
+    extremes_handler('std', c(-3,3), data, c(1:6))
+  },
+  'extremes_handler_IQR_3_3' = function(data){
+    extremes_handler('IQR', c(-3,3), data, c(3))
+  },
+  'extremes_handler_std_2_4+8+9+11+30' = function(data){
+    extremes_handler('std', c(-2,2), data, c(4,8,9,11,30))
+  },
+  'extremes_handler_IQR_3_1+4+5' = function(data){
+    extremes_handler('IQR', c(-3,3), data, c(1,4,5))
+  },
+  'extremes_handler_std_3_1-6+10-16+21-26' = function(data){
+    extremes_handler('std', c(-3,3), data, c(1:6,10:16,21:26))
+  },
+  'extremes_handler_std_2_7' = function(data){
+    extremes_handler('std', c(-2,2), data, c(7))
+  },
+  'extremes_handler_std_2_19' = function(data){
+    extremes_handler('std', c(-2,2), data, c(19))
+  },
+  'extremes_handler_std_2_3' = function(data){
+    extremes_handler('std', c(-2,2), data, c(3))
   }
 )
 
@@ -115,9 +139,9 @@ for (experiment in names(experiment_ls)) {
     
     
     # 實驗加工處理 
-    train_f <- experiment_ls[[experiment]](method, range, train_f, target)
-    val_f <- experiment_ls[[experiment]](method, range, val_f, target)
-    test_f <- experiment_ls[[experiment]](method, range, test_f, target)
+    train_f <- experiment_ls[[experiment]](train_f)
+    val_f <- experiment_ls[[experiment]](val_f)
+    # test_f <- experiment_ls[[experiment]](test_f)
     
     # 模型
     model <- baseline_model(train_f, label)
