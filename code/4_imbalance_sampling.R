@@ -23,8 +23,8 @@ train <- read.csv(train_path)
 test <- read.csv(test_path)
 
 # sampling parameters
-nsmp <- 200
-amp <- 200
+# nsmp <- 200
+# amp <- 200
 
 # 實驗 1 ==============================================
 # 輸出路徑
@@ -44,14 +44,51 @@ baseline_model <- function(train, label){
         method="class")
 }
 
+imbalance_handler <- function(data, nsmp, amp){
+  f_ind <- which(data$Class == 1)
+  nf_ind <- which(data$Class == 0)
+  pick_f <- sample(f_ind, nsmp, replace = ifelse(nsmp>length(f_ind),T,F))
+  pick_nf <- sample(nf_ind, nsmp*amp, replace = ifelse(nsmp*amp>length(nf_ind),T,F))
+  blnsmp.data <- data[c(pick_f, pick_nf),]
+  blnsmp.data <- blnsmp.data[order(blnsmp.data$Time),]
+}
+
 experiment_ls <- list(
-  'imbalance_handler' = function(data, nsmp, amp){
-    f_ind <- which(data$Class == 1)
-    nf_ind <- which(data$Class == 0)
-    pick_f <- sample(f_ind, nsmp, replace = ifelse(nsmp>length(f_ind),T,F))
-    pick_nf <- sample(nf_ind, nsmp*amp, replace = ifelse(nsmp*amp>length(nf_ind),T,F))
-    blnsmp.data <- data[c(pick_f, pick_nf),]
-    blnsmp.data <- blnsmp.data[order(blnsmp.data$Time),]
+  'imbalance_handler_200_200' = function(data){
+    imbalance_handler(data, 200, 200)
+  },
+  'imbalance_handler_250_200' = function(data){
+    imbalance_handler(data, 250, 200)
+  },
+  'imbalance_handler_415_475' = function(data){
+    imbalance_handler(data, 415, 475)
+  },
+  'imbalance_handler_415_300' = function(data){
+    imbalance_handler(data, 415, 300)
+  },
+  'imbalance_handler_830_120' = function(data){
+    imbalance_handler(data, 830, 120)
+  },
+  'imbalance_handler_1660_10' = function(data){
+    imbalance_handler(data, 1660, 10)
+  },
+  'imbalance_handler_200_100' = function(data){
+    imbalance_handler(data, 200, 100)
+  },
+  'imbalance_handler_300_200' = function(data){
+    imbalance_handler(data, 300, 200)
+  },
+  'imbalance_handler_400_50' = function(data){
+    imbalance_handler(data, 400, 50)
+  },
+  'imbalance_handler_350_200' = function(data){
+    imbalance_handler(data, 350, 200)
+  },
+  'imbalance_handler_650_80' = function(data){
+    imbalance_handler(data, 650, 80)
+  },
+  'imbalance_handler_560_120' = function(data){
+    imbalance_handler(data, 560, 120)
   }
 )
 
@@ -87,9 +124,9 @@ for (experiment in names(experiment_ls)) {
     
     
     # 實驗加工處理 
-    train_f <- experiment_ls[[experiment]](train_f, nsmp, amp)
-    val_f <- experiment_ls[[experiment]](val_f, nsmp, amp)
-    test_f <- experiment_ls[[experiment]](test_f, nsmp, amp)
+    train_f <- experiment_ls[[experiment]](train_f)
+    val_f <- experiment_ls[[experiment]](val_f)
+    # test_f <- experiment_ls[[experiment]](test_f)
     
     # 模型
     model <- baseline_model(train_f, label)
