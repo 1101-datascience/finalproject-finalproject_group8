@@ -88,6 +88,9 @@ decision trees(depth=20)  |  1     |  1.000           |  1.000          |  0.999
 - _Tatiana Sennikova, How to Build a Baseline Model,  2020, medium. ([source](https://towardsdatascience.com/how-to-build-a-baseline-model-be6ce42389fc))_
 - _Google, Classification on imbalanced data, 2021,  Tensorflow tutorials. ([source](https://www.tensorflow.org/tutorials/structured_data/imbalanced_data))_
 - _Google, Validation Set: Another Partition, 2020, google developers(Machine Learning Crash Course). ([source](https://developers.google.com/machine-learning/crash-course/validation/another-partition))_
+- _rpart.control: Control for Rpart Fits, RDocumentation.  (source)_
+- _rpart-decision-trees-in-r, learnbymarketing. (source)_
+- _Ben, rpart complexity parameter confusion, 2015, stackexchange(Cross Validated).(source)_
 
 ## environment
 - R version 3.6.3
