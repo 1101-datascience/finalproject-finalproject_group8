@@ -217,7 +217,7 @@ build_folder(pred_path, isfile=FALSE)
 
 baseline_model <- function(train, label){
   rpart(formula(paste(label, '~', '.')),
-        data=train, control=rpart.control(maxdepth=10, minsplit=30),
+        data=train, control=rpart.control(maxdepth=10, minsplit=20),
         method="class")
 }
 
