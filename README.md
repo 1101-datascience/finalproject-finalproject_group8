@@ -1,5 +1,5 @@
 # [Group8] Credit Card Fraud Detection
-#### Tags: `Imbalanced data`、`Binary classification`、`Finance`、`Transaction data`
+#### Tags: `Imbalanced data`、`Binary classification`、`Finance`、`Credit Card transaction data`、`Time series`
 
 ### Groups
 |名字|系級|學號|
