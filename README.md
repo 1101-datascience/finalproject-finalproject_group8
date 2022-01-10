@@ -93,6 +93,8 @@ decision trees(depth=20)  |  1     |  1.000           |  1.000          |  0.999
 - R version 3.6.3
 - rpart: 4.1-15
 - ggplot2: 3.3.5
+- tidyr: 1.1.3
+- dplyr: 1.0.6  
 
 ### sessionInfo
 #### `./docs/sessionInfo(yen-nan ho).txt`
