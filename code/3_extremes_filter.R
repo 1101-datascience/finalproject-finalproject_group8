@@ -8,6 +8,12 @@ library(rpart)
 check_library('ggplot2')
 library(ggplot2)
 
+# 資料處理套件
+check_library('tidyr')
+library(tidyr)
+check_library('dplyr')
+library(dplyr)
+
 # 資料準備 =================================================
 fold <- 4
 label <- 'Class'
@@ -40,16 +46,18 @@ test <- read.csv(test_path)
 result_path <- './output/3_extremes_filter/result.Time.csv'
 result_select_path <- './output/3_extremes_filter/result_select.Time.csv'
 result_best_path <- './output/3_extremes_filter/result_best.Time.csv'
+result_img_path <- './output/3_extremes_filter/result_best.img.png'
 pred_path <- './output/3_extremes_filter/pred.Time/'
 
 build_folder(result_path)
 build_folder(result_select_path)
 build_folder(result_best_path)
+build_folder(result_img_path)
 build_folder(pred_path, isfile=FALSE)
 
 baseline_model <- function(train, label){
   rpart(formula(paste(label, '~', '.')),
-        data=train, control=rpart.control(maxdepth=10, minsplit=30),
+        data=train, control=rpart.control(maxdepth=10, minsplit=20),
         method="class")
 }
 # extremes filter
@@ -81,29 +89,41 @@ extremes_handler <- function(method, range, data, target){
   data <- data[rownames(data.frame(data_eh)),]
 }
 experiment_ls <- list(
-  'extremes_handler_std_3_1-6' = function(data){
-    extremes_handler('std', c(-3,3), data, c(1:6))
+  'IQR_3_Time' = function(data){
+    extremes_handler('IQR', c(-3,3), data, c(1))
   },
-  'extremes_handler_IQR_3_3' = function(data){
+  'IQR_3_Amount' = function(data){
+    extremes_handler('IQR', c(-3,3), data, c(30))
+  },
+  'IQR_3_Time+Amount' = function(data){
+    extremes_handler('IQR', c(-3,3), data, c(1,30))
+  },
+  'IQR_3_V2' = function(data){
     extremes_handler('IQR', c(-3,3), data, c(3))
   },
-  'extremes_handler_std_2_4+8+9+11+30' = function(data){
-    extremes_handler('std', c(-2,2), data, c(4,8,9,11,30))
+  'std_3_V3' = function(data){
+    extremes_handler('std', c(-3,3), data, c(4))
   },
-  'extremes_handler_IQR_3_1+4+5' = function(data){
+  'std_2_V3' = function(data){
+    extremes_handler('std', c(-2,2), data, c(4))
+  },
+  'IQR_3_Time+V3+V4' = function(data){
     extremes_handler('IQR', c(-3,3), data, c(1,4,5))
   },
-  'extremes_handler_std_3_1-6+10-16+21-26' = function(data){
-    extremes_handler('std', c(-3,3), data, c(1:6,10:16,21:26))
+  'std_3_Time+V3+V4' = function(data){
+    extremes_handler('std', c(-3,3), data, c(1,4,5))
   },
-  'extremes_handler_std_2_7' = function(data){
-    extremes_handler('std', c(-2,2), data, c(7))
+  'IQR_3_Time~V5' = function(data){
+    extremes_handler('IQR', c(-3,3), data, c(1:6))
   },
-  'extremes_handler_std_2_19' = function(data){
-    extremes_handler('std', c(-2,2), data, c(19))
+  'std_3_Time~V5' = function(data){
+    extremes_handler('std', c(-3,3), data, c(1:6))
   },
-  'extremes_handler_std_2_3' = function(data){
-    extremes_handler('std', c(-2,2), data, c(3))
+  'IQR_4_All' = function(data){
+    extremes_handler('IQR', c(-4,4), data, c(1:30))
+  },
+  'IQR_4_all' = function(data){
+    extremes_handler('IQR', c(-4,4), data, c(2:29))
   }
 )
 
@@ -208,18 +228,18 @@ write.csv(result_select, result_select_path,
 write.csv(result_select_best, result_best_path, 
           row.names = FALSE, quote = FALSE)
 
-# # result_select_best <- read.csv(result_best_path)
-# aggNew <- result_select_best %>% pivot_longer(cols =  c('test_accuracy',
-#                                                         'test_precision',
-#                                                         'test_recall',
-#                                                         'test_f1'),
-#                                               names_to = "Evaluation", 
-#                                               values_to = "Value")
-# 
-# COLORS <- c(test_accuracy = "darkred", test_precision ="steelblue",  
-#             test_recall = "turquoise" , test_f1 = "tan1")
-# ggplot(aggNew, aes(x = experiment, y = Value, group = Evaluation, color = Evaluation)) +
-#   geom_line(size = 0.9) +
-#   scale_color_manual(values = COLORS)
+result_select_best <- read.csv(result_best_path)
+aggNew <- result_select_best %>% pivot_longer(cols =  c('test_accuracy',
+                                                        'test_precision',
+                                                        'test_recall',
+                                                        'test_f1'),
+                                              names_to = "Evaluation",
+                                              values_to = "Value")
 
-# 實驗 2 ==============================================
+COLORS <- c(test_accuracy = "darkred", test_precision ="steelblue",
+            test_recall = "turquoise" , test_f1 = "tan1")
+png(result_img_path,width = 1200,height = 600)
+ggplot(aggNew, aes(x = experiment, y = Value, group = Evaluation, color = Evaluation)) +
+  geom_line(size = 0.9) +
+  scale_color_manual(values = COLORS)
+dev.off()
