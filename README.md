@@ -28,7 +28,7 @@
 ### Baseline model
 - maxdepth=10
 - miinsplit=20
-- 
+
 ![](results/6_feature_engineering_baseline_tree.png)
 
 ## Demo 
