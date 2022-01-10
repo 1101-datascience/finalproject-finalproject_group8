@@ -63,6 +63,40 @@ decision trees(depth=20)  |  1     |  1.000           |  1.000          |  0.999
 
 ##### 4. 所有實驗模型預測結果都會輸出在 -> `output/2_baseline/pred.maxdepth` 
 
+#### 極端值處理
+##### 1. 利用簡單分類器找參數
+```
+Rscript 3_extremes_filter_searcher.R --method IQR --range -3,3 --target 2:29 --train data/train.csv --test data/test.csv --report output/performance.ef.csv
+...
+Rscript 3_extremes_filter_searcher.R --method std --range -3,3 --target 3:8,11:20,22:25 --train data/train.csv --test data/test.csv --report output/performance.ef.csv
+```
+###### 參數結果 -> `temp/cwayneh/res/performance.ef.csv`
+##### 2. 挑選參數帶入實驗模組進行實驗
+```
+Rscript 3_extremes_filter.R
+```
+##### 3. 實驗結果比較 ->  `results/3_extremes_filter.png`
+![](results/3_extremes_filter.png)
+
+##### 4. 所有實驗模型預測結果都會輸出在 -> `output/3_extremes_filter/pred.Extremes`
+
+#### 資料不平衡處理
+##### 1. 利用簡單分類器找參數
+```
+Rscript 4_imbalance_sampling_searcher.R --nsmp 101 --amp 100 --train data/train.csv --test data/test.csv --report performance.is.csv
+...
+Rscript 4_imbalance_sampling_searcher.R --nsmp 200 --amp 200 --train data/train.csv --test data/test.csv --report performance.is.csv
+```
+###### 參數結果 -> `temp/cwayneh/res/performance.is.csv`
+##### 2. 挑選參數帶入實驗模組進行實驗
+```
+Rscript 4_imbalance_sampling.R
+```
+##### 3. 實驗結果比較 ->  `results/4_imbalance_sampling.png`
+![](results/4_imbalance_sampling.png)
+
+##### 4. 所有實驗模型預測結果都會輸出在 -> `output/4_imbalance_sampling/pred.Sampling`
+
 ## Folder organization and its related information
 ### docs
 * Your presentation, 1101_datascience_FP_<yourID|groupName>.ppt/pptx/pdf, by **Jan. 13**
