@@ -25,7 +25,7 @@
 ### K-fold methon
 ![](results/0_kfold_split_threeway.png)
 
-### Baseline model
+### Baseline model (decision tree)
 - maxdepth=10
 - miinsplit=20
 
