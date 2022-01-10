@@ -45,10 +45,11 @@ baseline_model <- function(train, label){
         method="class")
 }
 
-experiment_ls <- list()
+experiment_ls <- list("baseline"="")
 for (th in (1:10)*0.1) {
   experiment_ls[[paste0('th(', th, ')')]] <- th
 }
+
 # list(th(0.1) = 0.1, th(0.2) = 0.2, ..., th(1) = 1)
 
 fold_result <- list()
@@ -85,12 +86,21 @@ for (k in 1:fold) {
   # 評估結果
   for (experiment in names(experiment_ls)) {
     print(paste(experiment, '-', k))
-    fold_result[[experiment]][[k]] <- get_evaluate(model, 
-                                                   train = train_f, 
-                                                   test = test_f, 
-                                                   val = val_f,
-                                                   label = label,
-                                                   th=experiment_ls[[experiment]], pred_type='prob')
+    if (experiment!="baseline") {
+      fold_result[[experiment]][[k]] <- get_evaluate(model, 
+                                                     train = train_f, 
+                                                     test = test_f, 
+                                                     val = val_f,
+                                                     label = label,
+                                                     th=experiment_ls[[experiment]], pred_type='prob')
+    } else {
+      fold_result[[experiment]][[k]] <- get_evaluate(model, 
+                                                     train = train_f, 
+                                                     test = test_f, 
+                                                     val = val_f,
+                                                     label = label,
+                                                     )
+    }
     fold_result[[experiment]][[k]][['timeuse']] <- Sys.time() - start_time
   }
 }
