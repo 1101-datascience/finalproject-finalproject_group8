@@ -8,6 +8,11 @@ library(rpart)
 check_library('ggplot2')
 library(ggplot2)
 
+check_library('tidyr')
+library(tidyr)
+
+check_library('dplyr')
+library(dplyr)
 # 資料準備 =================================================
 fold <- 4
 label <- 'Class'
@@ -36,7 +41,7 @@ build_folder(pred_path, isfile=FALSE)
 
 baseline_model <- function(train, label){
   rpart(formula(paste(label, '~', '.')),
-        data=train, control=rpart.control(maxdepth=10, minsplit=30),
+        data=train, control=rpart.control(maxdepth=10, minsplit=20),
         method="class")
 }
 
@@ -203,10 +208,10 @@ df$Target <- ifelse(df$truth==1, 'fraud', 'normal')
 ggplot(data=df) + geom_density(aes(x=pred, color=Target, linetype=Target))
 ggplot(data=df[df$truth==1,]) + geom_density(aes(x=pred, color=Target, linetype=Target))
 
-df <- fold_result[[1]]$table$val_table
-df$Target <- ifelse(df$truth==1, 'fraud', 'normal')
-
-ggplot(data=df[df$truth==1,]) + geom_density(aes(x=pred, color=Target, linetype=Target))
+# df <- fold_result[[1]]$table$val_table
+# df$Target <- ifelse(df$truth==1, 'fraud', 'normal')
+# 
+# ggplot(data=df[df$truth==1,]) + geom_density(aes(x=pred, color=Target, linetype=Target))
 
 df <- fold_result[[1]]$table$test_table
 df$Target <- ifelse(df$truth==1, 'fraud', 'normal')
