@@ -8,6 +8,12 @@ library(rpart)
 check_library('ggplot2')
 library(ggplot2)
 
+# 資料處理套件
+check_library('tidyr')
+library(tidyr)
+check_library('dplyr')
+library(dplyr)
+
 # 資料準備 =================================================
 fold <- 4
 label <- 'Class'
@@ -31,16 +37,18 @@ test <- read.csv(test_path)
 result_path <- './output/4_imbalance_sampling/result.Time.csv'
 result_select_path <- './output/4_imbalance_sampling/result_select.Time.csv'
 result_best_path <- './output/4_imbalance_sampling/result_best.Time.csv'
+result_img_path <- './output/4_imbalance_sampling/result_best.img.png'
 pred_path <- './output/4_imbalance_sampling/pred.Time/'
 
 build_folder(result_path)
 build_folder(result_select_path)
 build_folder(result_best_path)
+build_folder(result_img_path)
 build_folder(pred_path, isfile=FALSE)
 
 baseline_model <- function(train, label){
   rpart(formula(paste(label, '~', '.')),
-        data=train, control=rpart.control(maxdepth=10, minsplit=30),
+        data=train, control=rpart.control(maxdepth=10, minsplit=20),
         method="class")
 }
 
@@ -54,40 +62,40 @@ imbalance_handler <- function(data, nsmp, amp){
 }
 
 experiment_ls <- list(
-  'imbalance_handler_200_200' = function(data){
+  '200_200' = function(data){
     imbalance_handler(data, 200, 200)
   },
-  'imbalance_handler_250_200' = function(data){
+  '250_200' = function(data){
     imbalance_handler(data, 250, 200)
   },
-  'imbalance_handler_415_475' = function(data){
+  '415_475' = function(data){
     imbalance_handler(data, 415, 475)
   },
-  'imbalance_handler_415_300' = function(data){
+  '415_300' = function(data){
     imbalance_handler(data, 415, 300)
   },
-  'imbalance_handler_830_120' = function(data){
+  '830_120' = function(data){
     imbalance_handler(data, 830, 120)
   },
-  'imbalance_handler_1660_10' = function(data){
+  '1660_10' = function(data){
     imbalance_handler(data, 1660, 10)
   },
-  'imbalance_handler_200_100' = function(data){
+  '200_100' = function(data){
     imbalance_handler(data, 200, 100)
   },
-  'imbalance_handler_300_200' = function(data){
+  '300_200' = function(data){
     imbalance_handler(data, 300, 200)
   },
-  'imbalance_handler_400_50' = function(data){
+  '400_50' = function(data){
     imbalance_handler(data, 400, 50)
   },
-  'imbalance_handler_350_200' = function(data){
+  '350_200' = function(data){
     imbalance_handler(data, 350, 200)
   },
-  'imbalance_handler_650_80' = function(data){
+  '650_80' = function(data){
     imbalance_handler(data, 650, 80)
   },
-  'imbalance_handler_560_120' = function(data){
+  '560_120' = function(data){
     imbalance_handler(data, 560, 120)
   }
 )
@@ -193,18 +201,18 @@ write.csv(result_select, result_select_path,
 write.csv(result_select_best, result_best_path, 
           row.names = FALSE, quote = FALSE)
 
-# # result_select_best <- read.csv(result_best_path)
-# aggNew <- result_select_best %>% pivot_longer(cols =  c('test_accuracy',
-#                                                         'test_precision',
-#                                                         'test_recall',
-#                                                         'test_f1'),
-#                                               names_to = "Evaluation",
-#                                               values_to = "Value")
-# 
-# COLORS <- c(test_accuracy = "darkred", test_precision ="steelblue",
-#             test_recall = "turquoise" , test_f1 = "tan1")
-# ggplot(aggNew, aes(x = experiment, y = Value, group = Evaluation, color = Evaluation)) +
-#   geom_line(size = 0.9) +
-#   scale_color_manual(values = COLORS)
+# result_select_best <- read.csv(result_best_path)
+aggNew <- result_select_best %>% pivot_longer(cols =  c('test_accuracy',
+                                                        'test_precision',
+                                                        'test_recall',
+                                                        'test_f1'),
+                                              names_to = "Evaluation",
+                                              values_to = "Value")
 
-# 實驗 2 ==============================================
+COLORS <- c(test_accuracy = "darkred", test_precision ="steelblue",
+            test_recall = "turquoise" , test_f1 = "tan1")
+png(result_img_path,width = 800,height = 600)
+ggplot(aggNew, aes(x = experiment, y = Value, group = Evaluation, color = Evaluation)) +
+  geom_line(size = 0.9) +
+  scale_color_manual(values = COLORS)
+dev.off()
