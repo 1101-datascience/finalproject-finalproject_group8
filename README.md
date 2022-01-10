@@ -87,7 +87,7 @@ decision trees(depth=20)  |  1     |  1.000           |  1.000          |  0.999
 ### results
 - 👑 門檻值的設定
 
-![](final_result.png)
+![](results/final_result.png)
 
 ## References
 - _Tommy Huang, 機器學習: Ensemble learning之Bagging、Boosting和AdaBoost, 2018, medium. ([source](https://chih-sheng-huang821.medium.com/%E6%A9%9F%E5%99%A8%E5%AD%B8%E7%BF%92-ensemble-learning%E4%B9%8Bbagging-boosting%E5%92%8Cadaboost-af031229ebc3))_
