@@ -32,7 +32,7 @@
 ![](results/6_feature_engineering_baseline_tree.png)
 
 ## Demo 
-可以參考 `code/2_baseline.R`，有使用 R 的 rpart(決策樹) 作為預測模型，並在我們定義 kfold(`output/1_kfold/kfold_idx.rds`) 終測試模型穩定度，其中包含 maxdepth、minsplpit 參數測試的實驗流程
+可以參考 `code/2_baseline.R`，有使用 R 的 rpart(決策樹) 作為預測模型，並在我們定義 kfold(`output/1_kfold/kfold_idx.rds`) 中測試模型穩定度，其中包含 maxdepth、minsplpit 參數測試的實驗流程
 #### 決策樹的參數測試(maxdepth)
 
 
@@ -65,7 +65,7 @@ decision trees(depth=20)  |  1     |  1.000           |  1.000          |  0.999
 
 #### 極端值處理
 ##### 1. 利用簡單分類器找參數
-```
+```R
 Rscript 3_extremes_filter_searcher.R --method IQR --range -3,3 --target 2:29 --train data/train.csv --test data/test.csv --report output/performance.ef.csv
 ...
 Rscript 3_extremes_filter_searcher.R --method std --range -3,3 --target 3:8,11:20,22:25 --train data/train.csv --test data/test.csv --report output/performance.ef.csv
@@ -73,8 +73,12 @@ Rscript 3_extremes_filter_searcher.R --method std --range -3,3 --target 3:8,11:2
 ###### 參數結果 -> `temp/cwayneh/res/performance.ef.csv`
 ##### 2. 挑選參數帶入實驗模組進行實驗
 ```
-Rscript 3_extremes_filter.R
+experiment_ls <- list(
+  'IQR_3_Time+Amount' = function(data){    extremes_handler('IQR', c(-3,3), data, c(1,30))  },
+  'std_3_Time~V5' = function(data){    extremes_handler('std', c(-3,3), data, c(1:6))  },
+  'limit_1_all' = function(data){    extremes_handler('limit', c(-1,1), data, c(2:29))  })
 ```
+###### Runtime -> ```Rscript 3_extremes_filter.R```
 ##### 3. 實驗結果比較 ->  `results/3_extremes_filter.png`
 ![](results/3_extremes_filter.png)
 
@@ -82,7 +86,7 @@ Rscript 3_extremes_filter.R
 
 #### 資料不平衡處理
 ##### 1. 利用簡單分類器找參數
-```
+```R
 Rscript 4_imbalance_sampling_searcher.R --nsmp 101 --amp 100 --train data/train.csv --test data/test.csv --report performance.is.csv
 ...
 Rscript 4_imbalance_sampling_searcher.R --nsmp 200 --amp 200 --train data/train.csv --test data/test.csv --report performance.is.csv
@@ -90,8 +94,11 @@ Rscript 4_imbalance_sampling_searcher.R --nsmp 200 --amp 200 --train data/train.
 ###### 參數結果 -> `temp/cwayneh/res/performance.is.csv`
 ##### 2. 挑選參數帶入實驗模組進行實驗
 ```
-Rscript 4_imbalance_sampling.R
+experiment_ls <- list(
+  '415_300' = function(data){    imbalance_handler(data, 415, 300)  },
+  '830_120' = function(data){    imbalance_handler(data, 830, 120)  })
 ```
+###### Runtime -> ```Rscript 4_imbalance_sampling.R```
 ##### 3. 實驗結果比較 ->  `results/4_imbalance_sampling.png`
 ![](results/4_imbalance_sampling.png)
 
@@ -183,4 +190,29 @@ loaded via a namespace (and not attached):
 [46] assertthat_0.2.1 rstudioapi_0.13  iterators_1.0.13
 [49] R6_2.5.1         nlme_3.1-144     compiler_3.6.3  
 
+```
+#### `./docs/sessionInfo(waynechen).txt`
+```
+R version 3.6.3 (2020-02-29)
+Platform: x86_64-w64-mingw32/x64 (64-bit)
+Running under: Windows 10 x64 (build 19043)
+
+Matrix products: default
+
+locale:
+[1] LC_COLLATE=Chinese (Traditional)_Taiwan.950  LC_CTYPE=Chinese (Traditional)_Taiwan.950   
+[3] LC_MONETARY=Chinese (Traditional)_Taiwan.950 LC_NUMERIC=C                                
+[5] LC_TIME=Chinese (Traditional)_Taiwan.950    
+
+attached base packages:
+[1] stats     graphics  grDevices utils     datasets  methods   base     
+
+other attached packages:
+[1] dplyr_1.0.6   tidyr_1.1.3   ggplot2_3.3.5 rpart_4.1-15 
+
+loaded via a namespace (and not attached):
+ [1] magrittr_2.0.1   tidyselect_1.1.1 munsell_0.5.0    colorspace_2.0-1 R6_2.5.1         rlang_0.4.11     fansi_0.4.2     
+ [8] tools_3.6.3      grid_3.6.3       gtable_0.3.0     utf8_1.2.1       withr_2.4.2      ellipsis_0.3.2   digest_0.6.27   
+[15] tibble_3.1.1     lifecycle_1.0.1  crayon_1.4.2     farver_2.1.0     purrr_0.3.4      vctrs_0.3.8      glue_1.4.2      
+[22] labeling_0.4.2   compiler_3.6.3   pillar_1.6.4     generics_0.1.1   scales_1.1.1     pkgconfig_2.0.3 
 ```
