@@ -28,7 +28,7 @@ kfold_idx <- readRDS(kfoldid_path)
 train <- read.csv(train_path)
 test <- read.csv(test_path)
 
-# filter parameters
+# filter parameters in manual
 # method <- 'std'
 # target <- '1:6'
 # tgtmp <- strsplit(unlist(strsplit(target,',')),':')
@@ -43,11 +43,11 @@ test <- read.csv(test_path)
 
 # 實驗 1 ==============================================
 # 輸出路徑
-result_path <- './output/3_extremes_filter/result.Time.csv'
-result_select_path <- './output/3_extremes_filter/result_select.Time.csv'
-result_best_path <- './output/3_extremes_filter/result_best.Time.csv'
-result_img_path <- './output/3_extremes_filter/result_best.img.png'
-pred_path <- './output/3_extremes_filter/pred.Time/'
+result_path <- './output/3_extremes_filter/result.Extremes.csv'
+result_select_path <- './output/3_extremes_filter/result_select.Extremes.csv'
+result_best_path <- './output/3_extremes_filter/result_best.Extremes.csv'
+result_img_path <- './output/3_extremes_filter/result_best.png'
+pred_path <- './output/3_extremes_filter/pred.Extremes/'
 
 build_folder(result_path)
 build_folder(result_select_path)
@@ -57,7 +57,7 @@ build_folder(pred_path, isfile=FALSE)
 
 baseline_model <- function(train, label){
   rpart(formula(paste(label, '~', '.')),
-        data=train, control=rpart.control(maxdepth=10, minsplit=20),
+        data=train, control=rpart.control(maxdepth=10, minsplit=30),
         method="class")
 }
 # extremes filter
@@ -65,17 +65,20 @@ extremes_handler <- function(method, range, data, target){
   data_eh <- data.frame(data[,target])
   data_tmp <- data_eh
   switch (method,
+          # use IQR range to keep needed data
           IQR = {
             for (i in 1:NCOL(data_eh)) {
-              # q.75 <- quantile(data[,i], probs = 0.75)
-              # q.25 <- quantile(data[,i], probs = 0.25)
+              # q.75 <- quantile(data_tmp[,i], probs = 0.75)
+              # q.25 <- quantile(data_tmp[,i], probs = 0.25)
               iqr <- IQR(data_tmp[,i])
               # print(iqr)
               lb <- range[1] #lower bound
               ub <- range[2] #upper bound
+              # data_eh <- data_eh[data_eh[,i]>(q.25+lb*iqr)&data_eh[,i]<(q.75+ub*iqr),]
               data_eh <- data_eh[data_eh[,i]>(lb*iqr)&data_eh[,i]<(ub*iqr),]
             }
           },
+          # use standard deviation by mean centroid
           std = {
             for (i in 1:NCOL(data_eh)) {
               isd <- sd(data_tmp[,i]) #standard deviation
@@ -84,47 +87,71 @@ extremes_handler <- function(method, range, data, target){
               ub <- range[2] #upper bound
               data_eh <- data_eh[data_eh[,i]>(imn+lb*isd)&data_eh[,i]<(imn+ub*isd),]
             }
+          },
+          # use min or max to determine lower or upper bound
+          limit = {
+            for (i in 1:NCOL(data_eh)) {
+              isd <- sd(data_tmp[,i]) #standard deviation
+              imax <- max(data_tmp[,i]) #max
+              imin <- min(data_tmp[,i]) #min
+              lb <- range[1] #lower bound
+              ub <- range[2] #upper bound
+              data_eh <- data_eh[data_eh[,i]>(imin-lb*isd)&data_eh[,i]<(imax-ub*isd),]
+              print(paste0("feature:",colnames(data_eh[i]),",num:",NROW(data_eh)))
+            }
           }
   )
   data <- data[rownames(data.frame(data_eh)),]
 }
 experiment_ls <- list(
-  'IQR_3_Time' = function(data){
-    extremes_handler('IQR', c(-3,3), data, c(1))
+  'limit_0.5_ALL' = function(data){
+    extremes_handler('limit', c(-0.5,0.5), data, c(1:30))
   },
-  'IQR_3_Amount' = function(data){
-    extremes_handler('IQR', c(-3,3), data, c(30))
-  },
-  'IQR_3_Time+Amount' = function(data){
-    extremes_handler('IQR', c(-3,3), data, c(1,30))
-  },
-  'IQR_3_V2' = function(data){
-    extremes_handler('IQR', c(-3,3), data, c(3))
-  },
-  'std_3_V3' = function(data){
-    extremes_handler('std', c(-3,3), data, c(4))
-  },
-  'std_2_V3' = function(data){
-    extremes_handler('std', c(-2,2), data, c(4))
-  },
-  'IQR_3_Time+V3+V4' = function(data){
-    extremes_handler('IQR', c(-3,3), data, c(1,4,5))
-  },
-  'std_3_Time+V3+V4' = function(data){
-    extremes_handler('std', c(-3,3), data, c(1,4,5))
-  },
-  'IQR_3_Time~V5' = function(data){
-    extremes_handler('IQR', c(-3,3), data, c(1:6))
-  },
-  'std_3_Time~V5' = function(data){
-    extremes_handler('std', c(-3,3), data, c(1:6))
-  },
-  'IQR_4_All' = function(data){
-    extremes_handler('IQR', c(-4,4), data, c(1:30))
-  },
-  'IQR_4_all' = function(data){
-    extremes_handler('IQR', c(-4,4), data, c(2:29))
+  'limit_0.5_all' = function(data){
+    extremes_handler('limit', c(-0.5,0.5), data, c(2:29))
   }
+  # 'limit_1_ALL' = function(data){
+  #   extremes_handler('limit', c(-1,1), data, c(1:30))
+  # },
+  # 'limit_1_all' = function(data){
+  #   extremes_handler('limit', c(-1,1), data, c(2:29))
+  # },
+  # 'IQR_3_Time' = function(data){
+  #   extremes_handler('IQR', c(-3,3), data, c(1))
+  # },
+  # 'IQR_3_Amount' = function(data){
+  #   extremes_handler('IQR', c(-3,3), data, c(30))
+  # },
+  # 'IQR_3_Time+Amount' = function(data){
+  #   extremes_handler('IQR', c(-3,3), data, c(1,30))
+  # },
+  # 'IQR_3_V2' = function(data){
+  #   extremes_handler('IQR', c(-3,3), data, c(3))
+  # },
+  # 'std_3_V3' = function(data){
+  #   extremes_handler('std', c(-3,3), data, c(4))
+  # },
+  # 'std_2_V3' = function(data){
+  #   extremes_handler('std', c(-2,2), data, c(4))
+  # },
+  # 'IQR_3_Time+V3+V4' = function(data){
+  #   extremes_handler('IQR', c(-3,3), data, c(1,4,5))
+  # },
+  # 'std_3_Time+V3+V4' = function(data){
+  #   extremes_handler('std', c(-3,3), data, c(1,4,5))
+  # },
+  # 'IQR_3_Time~V5' = function(data){
+  #   extremes_handler('IQR', c(-3,3), data, c(1:6))
+  # },
+  # 'std_3_Time~V5' = function(data){
+  #   extremes_handler('std', c(-3,3), data, c(1:6))
+  # },
+  # 'IQR_4_All' = function(data){
+  #   extremes_handler('IQR', c(-4,4), data, c(1:30))
+  # },
+  # 'IQR_4_all' = function(data){
+  #   extremes_handler('IQR', c(-4,4), data, c(2:29))
+  # }
 )
 
 fold_result <- list()
@@ -238,8 +265,8 @@ aggNew <- result_select_best %>% pivot_longer(cols =  c('test_accuracy',
 
 COLORS <- c(test_accuracy = "darkred", test_precision ="steelblue",
             test_recall = "turquoise" , test_f1 = "tan1")
-png(result_img_path,width = 1200,height = 600)
+png(result_img_path,width = 1200, height = 600)
 ggplot(aggNew, aes(x = experiment, y = Value, group = Evaluation, color = Evaluation)) +
-  geom_line(size = 0.9) +
+  geom_line(size = 0.8) +
   scale_color_manual(values = COLORS)
 dev.off()
